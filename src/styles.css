@@ -1,0 +1,746 @@
+:root {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --surface-2: #334155;
+  --text: #f1f5f9;
+  --muted: #94a3b8;
+  --accent: #22c55e;
+  --accent-text: #052e16;
+  --danger: #ef4444;
+  --board-red: #b91c1c;
+  --board-green: #15803d;
+  --radius: 12px;
+  --tap: 56px;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#root {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: max(1rem, env(safe-area-inset-top)) 1rem max(1rem, env(safe-area-inset-bottom));
+  max-width: 560px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+h1 {
+  margin: 0;
+  font-size: 2rem;
+  text-align: center;
+}
+
+h2 {
+  margin: 0 0 0.5rem;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: var(--surface-2);
+  border: none;
+  border-radius: var(--radius);
+  min-height: var(--tap);
+  padding: 0 1rem;
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+  transition: background 80ms, transform 80ms;
+}
+
+button:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+button.primary {
+  background: var(--accent);
+  color: var(--accent-text);
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+
+button.secondary {
+  background: transparent;
+  border: 2px solid var(--surface-2);
+}
+
+button.icon {
+  min-width: var(--tap);
+  padding: 0;
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+/* Setup */
+
+.setup section {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.player-inputs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.player-inputs li {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.player-inputs input {
+  flex: 1;
+  font: inherit;
+  font-size: 1.1rem;
+  color: var(--text);
+  background: var(--bg);
+  border: 2px solid var(--surface-2);
+  border-radius: var(--radius);
+  min-height: var(--tap);
+  padding: 0 0.9rem;
+}
+
+.player-inputs input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.segmented {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 4px;
+  background: var(--bg);
+  padding: 4px;
+  border-radius: var(--radius);
+}
+
+.segmented button {
+  background: transparent;
+  font-weight: 600;
+}
+
+.segmented button[aria-checked="true"] {
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: var(--tap);
+  font-size: 1.05rem;
+  cursor: pointer;
+}
+
+.toggle input {
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+  accent-color: var(--accent);
+}
+
+.toggle small {
+  display: block;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+/* Game */
+
+.game-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: var(--tap);
+}
+
+.game-header .title,
+.game-header > span {
+  flex: 1;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.game-header button {
+  min-height: 44px;
+  padding: 0 0.9rem;
+}
+
+button.danger {
+  background: var(--danger);
+  font-weight: 700;
+}
+
+.game {
+  gap: 0.75rem;
+}
+
+.players {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.5rem;
+}
+
+.player {
+  background: var(--surface);
+  border: 2px solid transparent;
+  border-radius: var(--radius);
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.player.current {
+  border-color: var(--accent);
+}
+
+.player.finished {
+  border-color: var(--board-green);
+  opacity: 0.75;
+}
+
+.chip.out {
+  background: var(--board-green);
+  font-weight: 700;
+}
+
+.player-name {
+  font-size: 0.95rem;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.player-score {
+  font-size: 2.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.player-darts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  min-height: 1.6rem;
+}
+
+.chip {
+  background: var(--surface-2);
+  border-radius: 6px;
+  padding: 0.1rem 0.45rem;
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.chip.empty {
+  opacity: 0.35;
+}
+
+.chip.bust {
+  background: var(--danger);
+  font-weight: 700;
+}
+
+.chip.total {
+  background: transparent;
+  color: var(--muted);
+}
+
+.pad {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.multipliers {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.multipliers button {
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.multipliers button[aria-checked="true"] {
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
+.numbers {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.5rem;
+}
+
+.numbers button {
+  font-size: 1.3rem;
+  font-weight: 600;
+  padding: 0;
+}
+
+.specials {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+.specials button {
+  font-weight: 600;
+}
+
+.specials .outer-bull {
+  background: var(--board-green);
+}
+
+.specials .bullseye {
+  background: var(--board-red);
+}
+
+.chip.outer-bull {
+  background: var(--board-green);
+}
+
+.chip.bullseye {
+  background: var(--board-red);
+}
+
+.specials .undo {
+  background: transparent;
+  border: 2px solid var(--surface-2);
+}
+
+/* Winner */
+
+.winner {
+  position: relative;
+  overflow: hidden;
+  justify-content: center;
+  align-items: stretch;
+  text-align: center;
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(34, 197, 94, 0.25), transparent 60%),
+    var(--bg);
+}
+
+.sound-toggle {
+  position: absolute;
+  top: max(0.75rem, env(safe-area-inset-top));
+  right: 0.75rem;
+  z-index: 2;
+  font-size: 1.3rem;
+  background: var(--surface);
+}
+
+.trophy {
+  font-size: 6rem;
+  line-height: 1;
+  animation:
+    pop-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both,
+    bounce 1.6s ease-in-out 0.6s infinite;
+  filter: drop-shadow(0 0 24px rgba(250, 204, 21, 0.6));
+}
+
+.winner-title {
+  font-size: 2.2rem;
+  margin: 0.5rem 0 1.5rem;
+  animation: rise-in 0.6s ease-out 0.25s both;
+}
+
+.winner-name {
+  display: block;
+  font-size: 3rem;
+  color: var(--accent);
+  text-shadow: 0 0 20px rgba(34, 197, 94, 0.7);
+  animation: glow 1.8s ease-in-out infinite alternate;
+}
+
+.winner-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  animation: rise-in 0.6s ease-out 0.5s both;
+}
+
+.confetti {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.confetti span {
+  position: absolute;
+  top: -20px;
+  left: var(--x);
+  width: var(--size);
+  height: calc(var(--size) * 0.5);
+  background: var(--color);
+  border-radius: 2px;
+  opacity: 0;
+  animation: confetti-fall var(--duration) linear var(--delay) infinite;
+}
+
+@keyframes confetti-fall {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg);
+  }
+  100% {
+    opacity: 0.8;
+    transform: translate(var(--drift), 110vh) rotate(var(--spin));
+  }
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.2) rotate(-20deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes glow {
+  from {
+    text-shadow: 0 0 12px rgba(34, 197, 94, 0.5);
+  }
+  to {
+    text-shadow: 0 0 32px rgba(34, 197, 94, 1), 0 0 60px rgba(34, 197, 94, 0.5);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trophy,
+  .winner-title,
+  .winner-name,
+  .winner-actions,
+  .confetti span {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+/* Stats */
+
+.stats .game-header .title {
+  font-size: 1.3rem;
+  margin: 0;
+  text-align: left;
+}
+
+.stats-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface);
+  border-radius: var(--radius);
+  overflow: hidden;
+  font-variant-numeric: tabular-nums;
+}
+
+.stats-table th,
+.stats-table td {
+  padding: 0.55rem 0.75rem;
+  text-align: right;
+  border-bottom: 1px solid var(--surface-2);
+}
+
+.stats-table tbody tr:last-child th,
+.stats-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.stats-table th[scope="row"] {
+  text-align: left;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.stats-table thead th {
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 7rem;
+}
+
+.stats-table thead th.winner-col {
+  color: var(--accent);
+}
+
+.stats-table td {
+  font-weight: 600;
+}
+
+.stats section {
+  flex: none;
+}
+
+.rounds-scroll {
+  overflow-x: auto;
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.rounds-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.rounds-table th,
+.rounds-table td {
+  padding: 0.5rem 0.6rem;
+  border-bottom: 1px solid var(--surface-2);
+  vertical-align: top;
+}
+
+.rounds-table tbody tr:last-child th,
+.rounds-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.rounds-table thead th {
+  text-align: left;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.rounds-table thead th.winner-col {
+  color: var(--accent);
+}
+
+.rounds-table th[scope="row"] {
+  color: var(--muted);
+  font-weight: 500;
+  font-size: 0.85rem;
+  width: 2rem;
+  text-align: left;
+}
+
+.rounds-table td {
+  min-width: 7.5rem;
+}
+
+.round-darts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem;
+  margin-bottom: 0.25rem;
+}
+
+.round-total {
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-right: 0.5rem;
+}
+
+.round-remaining {
+  color: var(--muted);
+}
+
+.rounds-table td.bust .round-total {
+  color: var(--danger);
+}
+
+.stats .winner-actions {
+  flex: none;
+  animation: none;
+}
+
+.stats .history-list {
+  flex: none;
+  overflow: visible;
+}
+
+/* Layout + History */
+
+.layout {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.layout .game {
+  margin: 0;
+  min-width: 0;
+}
+
+.history {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--surface);
+  padding: max(1rem, env(safe-area-inset-top)) 1rem max(1rem, env(safe-area-inset-bottom));
+  gap: 0.75rem;
+}
+
+.history.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  background: var(--bg);
+}
+
+@media (min-width: 800px) {
+  .history {
+    width: 320px;
+    flex-shrink: 0;
+    border-left: 1px solid var(--surface-2);
+  }
+}
+
+.history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;
+}
+
+.history-header h2 {
+  margin: 0;
+}
+
+.history-empty {
+  color: var(--muted);
+  margin: 0;
+}
+
+.history-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.history-list li {
+  display: grid;
+  grid-template-columns: 2rem 1fr auto auto;
+  grid-template-areas:
+    "turn player total remaining"
+    "turn darts  total remaining";
+  column-gap: 0.5rem;
+  align-items: center;
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 0.4rem 0.6rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.history-turn {
+  grid-area: turn;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.history-player {
+  grid-area: player;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.history-darts {
+  grid-area: darts;
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+}
+
+.history-total {
+  grid-area: total;
+  font-weight: 700;
+  font-size: 1.1rem;
+  min-width: 2.5rem;
+  text-align: right;
+}
+
+.history-remaining {
+  grid-area: remaining;
+  color: var(--muted);
+  min-width: 2.5rem;
+  text-align: right;
+}
+
+.history-list li.bust .history-total {
+  color: var(--danger);
+}
