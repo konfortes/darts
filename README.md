@@ -1,5 +1,7 @@
 # Darts
 
+**Live: <https://konfortes.github.io/darts/>**
+
 A scoring app for x01 darts (301 / 501). Built to sit on a phone or tablet next to a real dartboard: big tap targets, dark theme, no account, no server.
 
 ## Features
@@ -13,6 +15,7 @@ A scoring app for x01 darts (301 / 501). Built to sit on a phone or tablet next 
 - Bust detection, turn totals, current player highlight
 - Throw history: side panel on wide screens, slide-over on phones
 - Game survives a page refresh (saved in localStorage)
+- Installable: "Add to Home Screen" on a phone opens it full-screen like a native app
 - Winner celebration with confetti and a short fanfare (mutable)
 - Match stats: 3-dart average, highest turn, misses, busts, triples, doubles, bulls, checkout darts, plus a round-by-round scoresheet
 
@@ -25,7 +28,7 @@ npm install
 npm run dev
 ```
 
-Open the printed URL (default `http://localhost:5173`). To use it on a phone on the same network:
+Open the printed URL (default `http://localhost:5173/darts/`). To use it on a phone on the same network:
 
 ```bash
 npm run dev -- --host
@@ -105,6 +108,14 @@ src/
 ```
 
 The engine treats the ordered list of darts as the single source of truth. Every render replays the list to derive scores, turns, busts, and the winner. Undo is therefore just removing the last dart.
+
+## Deployment
+
+Hosted on GitHub Pages. Every push to `main` runs `.github/workflows/deploy.yml`: install, test, build, publish `dist/`. A failing test blocks the deploy. Progress is visible under the repo's Actions tab.
+
+One-time repo setting: Settings → Pages → Build and deployment → Source: **GitHub Actions**.
+
+The app is served under `/darts/`, so `vite.config.ts` sets `base: '/darts/'`. Change both if you fork under another name or add a custom domain.
 
 ## Tech
 
